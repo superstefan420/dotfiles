@@ -37,8 +37,10 @@ let g:hybrid_custom_term_colors = 1
 let g:vscode_disable_nvimtree_bg = v:true
 colorscheme vscode
 set autoindent
+set hidden
 set smartindent
 set completeopt=menuone,noinsert,noselect
+set laststatus=0
 
 let mapleader = " "
 set splitbelow
@@ -60,7 +62,8 @@ nnoremap <Leader>th :BufferLineCyclePrev<CR>
 nnoremap <Leader>tL :tabmove<CR>
 nnoremap <Leader>tH :-tabmove<CR>
 
-nnoremap <Leader>ot :ToggleTerm size=13 direction=horizontal<CR>
+nnoremap <Leader>ot :ToggleTerm size=13 direction=horizontal <CR>
+
 
 tnoremap <esc> <C-\><C-N>
 autocmd TermOpen * setlocal nonumber norelativenumber
@@ -102,7 +105,57 @@ let g:nvim_tree_icons = {
     \   'symlink_open': "",
     \   }
     \ }
+
+autocmd BufWritePre *.go lua OrgImports(1000)
 lua <<EOF
+lspconfig = require "lspconfig"
+util = require "lspconfig/util"
+
+  lspconfig.gopls.setup {
+    cmd = {"gopls", "serve"},
+    filetypes = {"go", "gomod"},
+    root_dir = util.root_pattern("go.work", "go.mod", ".git"),
+    settings = {
+      gopls = {
+        analyses = {
+          unusedparams = true,
+        },
+        staticcheck = true,
+      },
+    },
+  }
+
+function OrgImports(wait_ms)
+    local params = vim.lsp.util.make_range_params()
+    params.context = {only = {"source.organizeImports"}}
+    local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, wait_ms)
+    for _, res in pairs(result or {}) do
+      for _, r in pairs(res.result or {}) do
+        if r.edit then
+          vim.lsp.util.apply_workspace_edit(r.edit, "UTF-8")
+        else
+          vim.lsp.buf.execute_command(r.command)
+        end
+      end
+    end
+  end
+
+require'lspconfig'.quick_lint_js.setup{}
+require'lspconfig'.bashls.setup{}
+require'lspconfig'.gdscript.setup{}
+require'lspconfig'.ltex.setup{}
+
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities.textDocument.completion.completionItem.snippetSupport = true
+
+
+require'lspconfig'.html.setup {
+  capabilities = capabilities,
+}
+
+require'lspconfig'.cssls.setup {
+  capabilities = capabilities,
+}
 
 require("bufferline").setup{
      options = {
@@ -113,7 +166,7 @@ require("bufferline").setup{
         indicator_icon = " ",
         left_trunc_marker = "",
         modified_icon = "●",
-	offsets = { { filetype = "NvimTree", text = "", text_align = "center" }, { filetype = "terminal", text = "terminal" } },
+	offsets = { { filetype = "NvimTree", text = "", text_align = "center" }, { filetype = "term", text = "terminal" } },
         right_mouse_command = "Bdelete! %d",
         right_trunc_marker = "",
         show_close_icon = false,
