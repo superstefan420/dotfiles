@@ -55,9 +55,9 @@ nnoremap <Leader>wl <C-W>l
 
 nnoremap <Leader>tn :tabnew<CR>
 nnoremap <Leader>tc :tabclose<CR>
-nnoremap <Leader>tl :tabnext<CR>
-nnoremap <Leader>th :tabprevious<CR>
-nnoremap <Leader>tL :+tabmove<CR>
+nnoremap <Leader>tl :BufferLineCycleNext<CR>
+nnoremap <Leader>th :BufferLineCyclePrev<CR>
+nnoremap <Leader>tL :tabmove<CR>
 nnoremap <Leader>tH :-tabmove<CR>
 
 nnoremap <Leader>ot :ToggleTerm size=13 direction=horizontal<CR>
