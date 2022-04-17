@@ -1,5 +1,5 @@
 call plug#begin()
-Plug 'yorik1984/newpaper.nvim'
+Plug 'lewis6991/impatient.nvim'
 Plug 'neovim/nvim-lspconfig'
 Plug 'mnishz/colorscheme-preview.vim'
 Plug 'simrat39/rust-tools.nvim'
@@ -29,7 +29,22 @@ Plug 'machakann/vim-sandwich'
 Plug 'tpope/vim-sleuth'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'lukas-reineke/indent-blankline.nvim'
+Plug 'nvim-telescope/telescope-ui-select.nvim'
+Plug 'ahmedkhalf/project.nvim'
 call plug#end()
+
+lua require('impatient')
+" rust stuff
+autocmd FileType rust call Rust_init()
+
+function Rust_init()
+  nnoremap <Leader>co :lua require'rust-tools.hover_actions'.hover_actions()<CR>
+  nnoremap <Leader>cr :lua require('rust-tools.runnables').runnables()<CR>
+  nnoremap <Leader>cd :RustDebuggables<CR>
+  nnoremap <Leader>cem :RustExpandMacro<CR>
+  nnoremap <Leader>ck :lua require'rust-tools.move_item'.move_item(true)<CR>
+  nnoremap <Leader>cj :lua require'rust-tools.move_item'.move_item(false)<CR>
+endfunction
 
 set termguicolors
 let g:vscode_style = "dark"
@@ -41,6 +56,7 @@ set hidden
 set smartindent
 set completeopt=menuone,noinsert,noselect
 set laststatus=0
+set mouse=a
 
 let mapleader = " "
 set splitbelow
@@ -48,6 +64,8 @@ set number
 
 " searching with telescope
 nnoremap ? :Telescope live_grep<CR>
+" recent projects
+nnoremap <Leader>or :Telescope projects<CR>
 
 nnoremap <Leader>wc :q!<CR>
 nnoremap <Leader>wh <C-W>h
@@ -62,7 +80,7 @@ nnoremap <Leader>th :BufferLineCyclePrev<CR>
 nnoremap <Leader>tL :tabmove<CR>
 nnoremap <Leader>tH :-tabmove<CR>
 
-nnoremap <Leader>ot :ToggleTerm size=13 direction=horizontal <CR>
+nnoremap <Leader>ot :ToggleTerm size=15 direction=horizontal <CR>
 
 
 tnoremap <esc> <C-\><C-N>
@@ -71,6 +89,7 @@ autocmd TermOpen * setlocal nonumber norelativenumber
 nnoremap <leader>of <cmd>Telescope find_files<cr>
 
 nnoremap <Leader>op :NvimTreeToggle<CR>
+
 
 let g:nvim_tree_add_trailing = 1 
 let g:nvim_tree_icon_padding = ' ' 
@@ -107,7 +126,27 @@ let g:nvim_tree_icons = {
     \ }
 
 autocmd BufWritePre *.go lua OrgImports(1000)
+
 lua <<EOF
+require("telescope").setup {
+  extensions = {
+    ["ui-select"] = {
+      require("telescope.themes").get_dropdown {
+        -- even more opts
+      }
+    }
+  }
+}
+require("telescope").load_extension("ui-select")
+
+require("project_nvim").setup {
+  detection_methods = { "lsp", "pattern" },
+  patterns = { ".git", "_darcs", ".hg", ".bzr", ".svn", "Makefile", "package.json", "Cargo.lock", "Cargo.toml", "target/debug" },
+  silent_chdir = false,
+}
+
+require('telescope').load_extension('projects')
+
 lspconfig = require "lspconfig"
 util = require "lspconfig/util"
 
@@ -143,7 +182,7 @@ function OrgImports(wait_ms)
 require'lspconfig'.quick_lint_js.setup{}
 require'lspconfig'.bashls.setup{}
 require'lspconfig'.gdscript.setup{}
-require'lspconfig'.ltex.setup{}
+require'lspconfig'.ltex.setup{ filetypes = { "bib", "gitcommit", "markdown", "org", "plaintex", "rst", "rnoweb", "tex" } }
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities.textDocument.completion.completionItem.snippetSupport = true
@@ -255,13 +294,12 @@ require("lualine").setup({
 
 
 require'nvim-tree'.setup {
-  actions = {
-    open_file = {
-      quit_on_open = true,	
-    }
-  }
+  update_cwd = true,
+  update_focused_file = {
+    enable = true,
+    update_cwd = true
+  },
 }
-
 local nvim_lsp = require'lspconfig'
 
 local opts = {
@@ -269,9 +307,16 @@ local opts = {
         autoSetHints = true,
         hover_with_actions = true,
         inlay_hints = {
-            show_parameter_hints = false,
-            parameter_hints_prefix = "",
-            other_hints_prefix = "",
+          show_parameter_hints = true,
+          parameter_hints_prefix = "<- ",
+          other_hints_prefix = "=> ",
+          max_len_align = false,
+          max_len_align_padding = 1,
+          right_align = false,
+          right_align_padding = 7
+        },
+        hover_actions = {
+           auto_focus = true
         },
     },
 
