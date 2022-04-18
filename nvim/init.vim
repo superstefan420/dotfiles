@@ -38,11 +38,11 @@ lua require('impatient')
 autocmd FileType rust call Rust_init()
 
 function Rust_init()
+  nnoremap <Leader>cg :RustViewCrateGraph<CR>
   nnoremap <Leader>co :lua require'rust-tools.hover_actions'.hover_actions()<CR>
   nnoremap <Leader>cr :lua require('rust-tools.runnables').runnables()<CR>
   nnoremap <Leader>cd :RustDebuggables<CR>
   nnoremap <Leader>cem :RustExpandMacro<CR>
-  nnoremap <Leader>ck :lua require'rust-tools.move_item'.move_item(true)<CR>
   nnoremap <Leader>cj :lua require'rust-tools.move_item'.move_item(false)<CR>
 endfunction
 
@@ -65,7 +65,7 @@ set number
 " searching with telescope
 nnoremap ? :Telescope live_grep<CR>
 " recent projects
-nnoremap <Leader>or :Telescope projects<CR>
+nnoremap <Leader>pp :Telescope projects<CR>
 
 nnoremap <Leader>wc :q!<CR>
 nnoremap <Leader>wh <C-W>h
@@ -129,14 +129,12 @@ autocmd BufWritePre *.go lua OrgImports(1000)
 
 lua <<EOF
 require("telescope").setup {
-  extensions = {
     ["ui-select"] = {
       require("telescope.themes").get_dropdown {
         -- even more opts
       }
     }
   }
-}
 require("telescope").load_extension("ui-select")
 
 require("project_nvim").setup {
