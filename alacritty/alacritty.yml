@@ -78,3 +78,8 @@ schemes:
    
 
 colors: *default
+
+cursor:
+    style:
+      shape: Beam
+      blinking: On
