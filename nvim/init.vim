@@ -31,6 +31,7 @@ Plug 'editorconfig/editorconfig-vim'
 Plug 'lukas-reineke/indent-blankline.nvim'
 Plug 'nvim-telescope/telescope-ui-select.nvim'
 Plug 'ahmedkhalf/project.nvim'
+Plug 'sainnhe/sonokai'
 call plug#end()
 
 lua require('impatient')
@@ -47,10 +48,12 @@ function Rust_init()
 endfunction
 
 set termguicolors
-let g:vscode_style = "dark"
-let g:hybrid_custom_term_colors = 1
+let g:sonokai_show_eob = 0
+"let g:vscode_style = "dark"
+let g:sonokai_trasparent_background = 1
+let g:sonokai_better_performance = 1
 let g:vscode_disable_nvimtree_bg = v:true
-colorscheme vscode
+colorscheme sonokai
 set autoindent
 set hidden
 set smartindent
@@ -75,8 +78,8 @@ nnoremap <Leader>wl <C-W>l
 
 nnoremap <Leader>tn :tabnew<CR>
 nnoremap <Leader>tc :tabclose<CR>
-nnoremap <Leader>tl :BufferLineCycleNext<CR>
-nnoremap <Leader>th :BufferLineCyclePrev<CR>
+nnoremap <Leader>tl :tabn<CR>
+nnoremap <Leader>th :-tabn<CR>
 nnoremap <Leader>tL :tabmove<CR>
 nnoremap <Leader>tH :-tabmove<CR>
 
@@ -203,11 +206,14 @@ require("bufferline").setup{
         indicator_icon = " ",
         left_trunc_marker = "",
         modified_icon = "●",
-	offsets = { { filetype = "NvimTree", text = "", text_align = "center" }, { filetype = "term", text = "terminal" } },
+	offsets = { { filetype = "NvimTree", text = "", text_align = "center" }, { filetype = "term", text = "terminal" } },
         right_mouse_command = "Bdelete! %d",
         right_trunc_marker = "",
         show_close_icon = false,
         show_tab_indicators = true,
+        show_buffer_close_icons = false,
+        show_buffer_default_icon = false,
+        diagnostics = "nvim_lsp",
     },
     highlights = {
         fill = {
@@ -219,12 +225,10 @@ require("bufferline").setup{
             guibg = { attribute = "bg", highlight = "StatusLine" },
         },
         buffer_visible = {
-            gui = "",
             guifg = { attribute = "fg", highlight = "Normal" },
             guibg = { attribute = "bg", highlight = "Normal" },
         },
         buffer_selected = {
-            gui = "",
             guifg = { attribute = "fg", highlight = "Normal" },
             guibg = { attribute = "bg", highlight = "Normal" },
         },
@@ -255,23 +259,7 @@ require("bufferline").setup{
     },
 }
 
-local ctheme = require'lualine.themes.vscode'
-ctheme.normal.a.bg = '#252526'
-ctheme.insert.a.bg = '#252526'
-ctheme.insert.a.fg = '#569cd6'
-ctheme.normal.a.fg = '#608b4e'
-ctheme.command.a.bg = '#252526'
-ctheme.command.a.fg = '#c678dd'
-ctheme.visual.a.bg = '#252526'
-ctheme.visual.a.fg = '#56b6c2'
-ctheme.visual.b.bg = '#252526'
-ctheme.visual.b.fg = '#569cd6'
-ctheme.normal.b.bg = '#252526'
-ctheme.normal.b.fg = '#569cd6'
-ctheme.insert.b.bg = '#252526'
-ctheme.insert.b.fg = '#569cd6'
-ctheme.command.b.bg = '#252526'
-ctheme.command.b.fg = '#569cd6'
+local ctheme = require'lualine.themes.sonokai'
 
 require("lualine").setup({
    options = {
