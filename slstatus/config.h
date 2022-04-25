@@ -65,6 +65,6 @@ static const char unknown_str[] = "n/a";
  */
 static const struct arg args[] = {
 	/* function format          argument */
-	{ wifi_essid,   "  %s",       "wlp0s20f0u2" },
-	{ datetime, "  %s ",           "%I:%M" },
+	{ wifi_essid,   "^c#b38df3^ 󰖩^d^ %s ",       "wlp0s20f0u2" },
+	{ datetime, "^b#f39660^^c#33353f^ 󱑒 ^c#f39660^^b#33353f^ %s ^d^",           "%I:%M" },
 };
