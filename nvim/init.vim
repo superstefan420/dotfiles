@@ -27,7 +27,6 @@ Plug 'akinsho/bufferline.nvim'
 Plug 'jiangmiao/auto-pairs'
 Plug 'machakann/vim-sandwich'
 Plug 'tpope/vim-sleuth'
-Plug 'editorconfig/editorconfig-vim'
 Plug 'lukas-reineke/indent-blankline.nvim'
 Plug 'nvim-telescope/telescope-ui-select.nvim'
 Plug 'ahmedkhalf/project.nvim'
@@ -54,13 +53,15 @@ let g:sonokai_trasparent_background = 1
 let g:sonokai_better_performance = 1
 let g:vscode_disable_nvimtree_bg = v:true
 colorscheme sonokai
-set autoindent
 set hidden
+set autoindent
 set smartindent
+set shiftwidth=4
+set tabstop=4
 set completeopt=menuone,noinsert,noselect
 set laststatus=0
 set mouse=a
-
+set cursorline
 let mapleader = " "
 set splitbelow
 set number
@@ -371,5 +372,9 @@ vim.opt.list = true
 require("indent_blankline").setup {
     show_end_of_line = true,
 }
+
+ require('lspconfig')['clangd'].setup {
+    capabilities = capabilities
+  }
 
 EOF
