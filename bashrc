@@ -13,4 +13,4 @@ GIT_PS1_SHOWCOLORHINTS=1
 
 . "$HOME/.cargo/env"
 export PATH="$PATH:$HOME/go/bin"
-complete -cf sudo
+complete -cf doas
