@@ -1,7 +1,7 @@
 [[ $- != *i* ]] && return
 
 alias ls='ls --color=auto'
-
+alias md='yt-dlp -f 'ba' -x --audio-format mp3'
 source $HOME/scripts/git-prompt.sh
 
 PROMPT_COMMAND='__git_ps1 "\W" " \\\$ "'

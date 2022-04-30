@@ -31,20 +31,23 @@ Plug 'lukas-reineke/indent-blankline.nvim'
 Plug 'nvim-telescope/telescope-ui-select.nvim'
 Plug 'ahmedkhalf/project.nvim'
 Plug 'sainnhe/sonokai'
+Plug 'onsails/lspkind-nvim'
 call plug#end()
 
 lua require('impatient')
+
+
 " rust stuff
 autocmd FileType rust call Rust_init()
 
 function Rust_init()
-  nnoremap <Leader>cg :RustViewCrateGraph<CR>
-  nnoremap <Leader>co :lua require'rust-tools.hover_actions'.hover_actions()<CR>
-  nnoremap <Leader>cr :lua require('rust-tools.runnables').runnables()<CR>
-  nnoremap <Leader>cd :RustDebuggables<CR>
-  nnoremap <Leader>cem :RustExpandMacro<CR>
-  nnoremap <Leader>cj :lua require'rust-tools.move_item'.move_item(false)<CR>
-endfunction
+  nnoremap <Leader>rg :RustViewCrateGraph<CR>
+  nnoremap <Leader>rh :lua require'rust-tools.hover_actions'.hover_actions()<CR><CR>
+  nnoremap <Leader>rr :lua require('rust-tools.runnables').runnables()<CR>
+  nnoremap <Leader>rd :RustDebuggables<CR>
+  nnoremap <Leader>rem :RustExpandMacro<CR>
+  nnoremap <Leader>rj :lua require'rust-tools.move_item'.move_item(false)<CR>
+endfunctio
 
 set termguicolors
 let g:sonokai_show_eob = 0
@@ -94,6 +97,14 @@ nnoremap <leader>of <cmd>Telescope find_files<cr>
 
 nnoremap <Leader>op :NvimTreeToggle<CR>
 
+nnoremap <Leader>cr :Telescope lsp_references<CR>
+nnoremap <Leader>cd :Telescope lsp_definitions<CR>
+nnoremap <Leader>dj :lua vim.lsp.diagnostic.goto_next()<CR>
+nnoremap <Leader>dk :lua vim.lsp.diagnostic.goto_prev()<CR>
+nnoremap <Leader>dd :Telescope lsp_document_diagnostics<CR>
+nnoremap <Leader>dD :Telescope lsp_workspace_diagnostics<CR>
+nnoremap <Leader>xx :Telescope lsp_code_actions<CR>
+nnoremap <Leader>xd :%Telescope lsp_range_code_actions<CR>
 
 let g:nvim_tree_add_trailing = 1 
 let g:nvim_tree_icon_padding = ' ' 
@@ -131,7 +142,13 @@ let g:nvim_tree_icons = {
 
 autocmd BufWritePre *.go lua OrgImports(1000)
 
+hi BarLspError guifg=#fc5d7c guibg=#33353f
+hi BarLspWarn guifg=#e7c664 guibg=#33353f
+hi BarLspInfo guifg=#76cce0 guibg=#33353f
+hi BarLspHint guifg=#9ed072 guibg=#33353f
+
 lua <<EOF
+
 require("telescope").setup {
     ["ui-select"] = {
       require("telescope.themes").get_dropdown {
@@ -140,6 +157,14 @@ require("telescope").setup {
     }
   }
 require("telescope").load_extension("ui-select")
+
+require'lspconfig'.omnisharp.setup {
+  capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities()),
+  on_attach = function(_, bufnr)
+    vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
+  end,
+  cmd = { "/home/stefan/.bin/omnisharp/run", "--languageserver" , "--hostPID" },
+}
 
 require("project_nvim").setup {
   detection_methods = { "lsp", "pattern" },
@@ -212,6 +237,7 @@ require("bufferline").setup{
         right_trunc_marker = "",
         show_close_icon = false,
         show_tab_indicators = true,
+        show_buffer_icons = false,
         show_buffer_close_icons = false,
         show_buffer_default_icon = false,
         diagnostics = "nvim_lsp",
@@ -264,13 +290,25 @@ local ctheme = require'lualine.themes.sonokai'
 
 require("lualine").setup({
    options = {
-        theme =  ctheme,
+        icons_enabled = 'true',
+        theme =  'sonokai',
 	component_separators = { left = '', right = ''},
         section_separators = { left = '', right = ''}
     },
      sections = {
     lualine_a = {'mode'},
-    lualine_b = {'branch', 'diagnostics'},
+    lualine_b = {'branch', {
+        'diagnostics',
+        sources = { 'nvim_lsp'},
+        sections = { 'error', 'warn', 'info', 'hint' },
+        diagnostics_color = {
+        error = 'BarLspError',
+        warn  = 'BarLspWarn',
+        info  = 'BarLspInfo',  
+        hint  = 'BarLspHint',  
+        },
+    }
+  },
     lualine_c = {'filename'},
     lualine_x = {'filetype'},
     lualine_y = {''},
@@ -332,6 +370,57 @@ EOF
 " Setup Completion
 " See https://github.com/hrsh7th/nvim-cmp#basic-configuration
 lua <<EOF
+
+require('lspkind').init({
+    -- DEPRECATED (use mode instead): enables text annotations
+    --
+    -- default: true
+    -- with_text = true,
+
+    -- defines how annotations are shown
+    -- default: symbol
+    -- options: 'text', 'text_symbol', 'symbol_text', 'symbol'
+    mode = 'symbol_text',
+
+    -- default symbol map
+    -- can be either 'default' (requires nerd-fonts font) or
+    -- 'codicons' for codicon preset (requires vscode-codicons font)
+    --
+    -- default: 'default'
+    preset = 'default',
+
+    -- override preset symbols
+    --
+    -- default: {}
+    symbol_map = {
+      Text = "",
+      Method = "",
+      Function = "",
+      Constructor = "",
+      Field = "ﰠ",
+      Variable = "",
+      Class = "ﴯ",
+      Interface = "",
+      Module = "",
+      Property = "ﰠ",
+      Unit = "塞",
+      Value = "",
+      Enum = "",
+      Keyword = "",
+      Snippet = "",
+      Color = "",
+      File = "",
+      Reference = "",
+      Folder = "",
+      EnumMember = "",
+      Constant = "",
+      Struct = "פּ",
+      Event = "",
+      Operator = "",
+      TypeParameter = ""
+    },
+})
+
 local cmp = require'cmp'
 cmp.setup({
   -- Enable LSP snippets

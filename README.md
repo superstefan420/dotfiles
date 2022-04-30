@@ -1,5 +1,5 @@
 # dotfiles
-my personal dotfiles. simple dwm build with functional patches. Light but intricate Neovim development enviornment inspired by gui editors like vscode and doom emacs
+my personal dotfiles. nice looking dwm build, super bloated neovim configuration that is pretty fun to use
 
 ## example screenshots (very out of date)
 
