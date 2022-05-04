@@ -1,7 +1,6 @@
 call plug#begin()
 Plug 'lewis6991/impatient.nvim'
 Plug 'neovim/nvim-lspconfig'
-Plug 'mnishz/colorscheme-preview.vim'
 Plug 'simrat39/rust-tools.nvim'
 Plug 'hrsh7th/nvim-cmp'
 Plug 'hrsh7th/cmp-nvim-lsp'
@@ -12,15 +11,12 @@ Plug 'hrsh7th/cmp-buffer'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'mfussenegger/nvim-dap'
 Plug 'ryanoasis/vim-devicons'
-Plug 'sonph/onehalf', {'rtp': 'vim/'}
 Plug 'kyazdani42/nvim-tree.lua'
-Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
 Plug 'akinsho/toggleterm.nvim'
 Plug 'flazz/vim-colorschemes'
-Plug 'Mofiqul/vscode.nvim'
 Plug 'kyazdani42/nvim-web-devicons'
 Plug 'nvim-lualine/lualine.nvim'
 Plug 'akinsho/bufferline.nvim'
@@ -31,7 +27,9 @@ Plug 'lukas-reineke/indent-blankline.nvim'
 Plug 'nvim-telescope/telescope-ui-select.nvim'
 Plug 'ahmedkhalf/project.nvim'
 Plug 'sainnhe/sonokai'
-Plug 'onsails/lspkind-nvim'
+
+Plug 'preservim/vim-pencil'
+Plug 'preservim/vim-markdown'
 call plug#end()
 
 lua require('impatient')
@@ -65,9 +63,9 @@ set completeopt=menuone,noinsert,noselect
 set laststatus=0
 set mouse=a
 set cursorline
+set number relativenumber
 let mapleader = " "
 set splitbelow
-set number
 
 " searching with telescope
 nnoremap ? :Telescope live_grep<CR>
@@ -288,10 +286,20 @@ require("bufferline").setup{
 
 local ctheme = require'lualine.themes.sonokai'
 
+ctheme.normal.a.bg = '#33353f'
+ctheme.normal.a.fg = '#85d3f2'
+ctheme.insert.a.bg = '#33353f'
+ctheme.insert.a.fg = '#a7df78'
+ctheme.visual.a.bg = '#33353f'
+ctheme.visual.a.fg = '#ff6077'
+ctheme.command.a.bg = '#33353f'
+ctheme.command.a.fg = '#e7c664'
+
 require("lualine").setup({
    options = {
         icons_enabled = 'true',
-        theme =  'sonokai',
+        theme =  ctheme,
+
 	component_separators = { left = '', right = ''},
         section_separators = { left = '', right = ''}
     },
@@ -310,7 +318,12 @@ require("lualine").setup({
     }
   },
     lualine_c = {'filename'},
-    lualine_x = {'filetype'},
+    lualine_x = {
+      {
+        'filetype',
+        colored = false,
+      }
+    },
     lualine_y = {''},
     lualine_z = {'location'}
   },
@@ -370,56 +383,6 @@ EOF
 " Setup Completion
 " See https://github.com/hrsh7th/nvim-cmp#basic-configuration
 lua <<EOF
-
-require('lspkind').init({
-    -- DEPRECATED (use mode instead): enables text annotations
-    --
-    -- default: true
-    -- with_text = true,
-
-    -- defines how annotations are shown
-    -- default: symbol
-    -- options: 'text', 'text_symbol', 'symbol_text', 'symbol'
-    mode = 'symbol_text',
-
-    -- default symbol map
-    -- can be either 'default' (requires nerd-fonts font) or
-    -- 'codicons' for codicon preset (requires vscode-codicons font)
-    --
-    -- default: 'default'
-    preset = 'default',
-
-    -- override preset symbols
-    --
-    -- default: {}
-    symbol_map = {
-      Text = "",
-      Method = "",
-      Function = "",
-      Constructor = "",
-      Field = "ﰠ",
-      Variable = "",
-      Class = "ﴯ",
-      Interface = "",
-      Module = "",
-      Property = "ﰠ",
-      Unit = "塞",
-      Value = "",
-      Enum = "",
-      Keyword = "",
-      Snippet = "",
-      Color = "",
-      File = "",
-      Reference = "",
-      Folder = "",
-      EnumMember = "",
-      Constant = "",
-      Struct = "פּ",
-      Event = "",
-      Operator = "",
-      TypeParameter = ""
-    },
-})
 
 local cmp = require'cmp'
 cmp.setup({

@@ -23,21 +23,21 @@ static const char dmenufont[]       = "JetBrainsMono Nerd Font Mono:size=16";
 static const char col_gray1[]       = "#2c2e34";
 static const char col_gray2[]       = "#444444";
 static const char col_gray3[]       = "#d4d4d4";
-static const char col_gray4[]       = "#eeeeee";
+static const char col_gray4[]       = "#e2e2e3";
 static const char col_cyan[]        = "#414550";
 static const char *colors[][3]      = {
 	/*               fg         bg         border   */
 	[SchemeNorm] = { col_gray3, col_gray1, "#2c2e34" },
 	[SchemeSel]  = { col_gray4, col_cyan,  "#414550"  },
 	[SchemeStatus]  = { col_gray3, col_gray1,  "#000000"  }, // Statusbar right {text,background,not used but cannot be empty}
-	[SchemeTagsSel]  = { col_gray4, col_cyan,  "#000000"  }, // Tagbar left selected {text,background,not used but cannot be empty}
-	[SchemeTagsNorm]  = { col_gray3, col_gray1,  "#000000"  }, // Tagbar left unselected {text,background,not used but cannot be empty}
+	[SchemeTagsSel]  = { col_gray4, col_gray1,  "#000000"  }, // Tagbar left selected {text,background,not used but cannot be empty}
+	[SchemeTagsNorm]  = { "#7f8490", col_gray1,  "#000000"  }, // Tagbar left unselected {text,background,not used but cannot be empty}
 	[SchemeInfoSel]  = { col_gray3, col_gray1,  "#000000"  }, // infobar middle  selected {text,background,not used but cannot be empty}
 	[SchemeInfoNorm]  = { col_gray3, col_gray1,  "#000000"  }, // infobar middle  unselected {text,background,not used but cannot be empty}
 };
 
 /* tagging */
-static const char *tags[] = { "󰆍", "󰖟", "󱃖", "󰝚", "󰇮" };
+static const char *tags[] = { "󰆍", "󰖟", "󱃖", "󰝚", "󰈙","󰇮", "󰒓" };
 
 static const unsigned int ulinepad	= 8;	/* horizontal padding between the underline and tag */
 static const unsigned int ulinestroke	= 2;	/* thickness / height of the underline */
@@ -51,7 +51,7 @@ static const Rule rules[] = {
 	 */
 	/* class      instance    title       tags mask     isfloating   monitor */
 //	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
-	{ "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
+	{ NULL,  NULL,       "music",       1 << 3,       0,           -1 },
 };
 
 /* layout(s) */
@@ -88,15 +88,18 @@ static const char *editorcmd[] = { "alacritty", "-e", "nvim", NULL };
 // quit function wasn't working for some reason
 static const char *quitcmd [] = { "pkill", "dwm", NULL };
 static const char *browsercmd[] = { "qutebrowser", NULL };
-
+static const char *musiccmd[] = { "alacritty", "-t", "music", "-e", "ncmpcpp", NULL};
+static const char *writecmd[] = { "alacritty", "--config-file", "/home/stefan/.config/alacritty/write.yml", "-e", "vim", "~/notes/index.md", NULL };
 #include "movestack.c"
 static Key keys[] = {
+	{ MODKEY|ShiftMask,				XK_w,	   spawn,		   {.v = writecmd } },
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_w,      spawn,          {.v = browsercmd } },
 	{ MODKEY,                       XK_e,      spawn,          {.v = editorcmd } },
 	{ 0,				XK_PrtSc,  spawn,	   {.v = scrotcmd } },
 	{ MODKEY,                       XK_d,      spawn,          {.v = dmenucmd } },
 	{ MODKEY, 	                XK_Return, spawn,          {.v = termcmd } },
+	{ MODKEY|ShiftMask,				XK_m,	   spawn,	   {.v = musiccmd} },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
