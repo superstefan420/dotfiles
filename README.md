@@ -1,5 +1,5 @@
 # dotfiles
-tested and working on gentoo devuan, and freebsd with some alternations
+tested and working on gentoo, devuan, and freebsd with some alternations
 
 ## example screenshots 
 
