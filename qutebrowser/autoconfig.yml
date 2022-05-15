@@ -6,6 +6,10 @@
 
 config_version: 2
 settings:
+  bindings.commands:
+    global:
+      normal:
+        ',p': hint links spawn mpv {hint-url}
   colors.completion.category.bg:
     global: '#2c2e34'
   colors.completion.category.border.bottom:
@@ -182,6 +186,13 @@ settings:
     global: false
   content.autoplay:
     global: false
+  content.blocking.adblock.lists:
+    global:
+    - https://easylist.to/easylist/easylist.txt
+    - https://easylist.to/easylist/easyprivacy.txt
+    - https://secure.fanboy.co.nz/fanboy-cookiemonster.txt
+    - https://easylist.to/easylist/fanboy-annoyance.txt
+    - https://github.com/uBlockOrigin/uAssets/raw/master/filters/annoyances.txt
   content.blocking.method:
     global: both
   content.cookies.accept:
@@ -205,6 +216,8 @@ settings:
     global: JetBrainsMono Nerd Font
   fonts.default_size:
     global: 20pt
+  input.insert_mode.auto_leave:
+    global: false
   statusbar.show:
     global: in-mode
   statusbar.widgets:

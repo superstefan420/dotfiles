@@ -1,6 +1,13 @@
 [[ $- != *i* ]] && return
 
-alias ls='ls --color=auto'
+GPG_TTY=`tty`
+export GPG_TTY
+export NEOVIDE_MULTIGRID=true
+
+alias ls='exa'
+alias ll='exa -l'
+alias grep='rg'
+alias cat='bat -p'
 alias md='yt-dlp -f 'ba' -x --audio-format mp3'
 alias wr='vim'
 alias nv='nvim'

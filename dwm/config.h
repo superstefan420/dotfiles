@@ -84,7 +84,7 @@ static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() 
 static const char *dmenucmd[] = { "dmenu_run", NULL };
 static const char *termcmd[]  = { "alacritty", NULL };
 static const char *scrotcmd[] = { "scrot", "-D", dmenumon, "-d", "5", NULL };
-static const char *editorcmd[] = { "alacritty", "-e", "nvim", NULL };
+static const char *editorcmd[] = { "neovide", NULL };
 // quit function wasn't working for some reason
 static const char *quitcmd [] = { "pkill", "dwm", NULL };
 static const char *browsercmd[] = { "qutebrowser", NULL };
