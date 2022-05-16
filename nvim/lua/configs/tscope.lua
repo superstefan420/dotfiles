@@ -1,7 +1,6 @@
 require("telescope").setup {
     ["ui-select"] = {
-      require("telescope.themes").get_dropdown {
-        -- even more opts
+      require("telescope.themes").get_dropdown {        -- even more opts
       }
     }
   }

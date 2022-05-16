@@ -1,16 +1,40 @@
 local cmp = require'cmp'
+local luasnip = require'luasnip'
+local lspkind = require'lspkind'
 
+local signs = { Error = "", Warn = "", Hint = "", Info = "" }
 
+vim.diagnostic.config({
+  virtual_text = {
+    prefix = '', -- Could be '●', '▎', 'x'
+  }
+})
+
+for type, icon in pairs(signs) do
+  local hl = "DiagnosticSign" .. type
+  vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
+end
+
+vim.o.updatetime=1000
+vim.cmd [[autocmd CursorHold,CursorHoldI * lua vim.lsp.buf.hover()]]
+
+vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
+    vim.lsp.diagnostic.on_publish_diagnostics, {
+        virtual_text = true,
+		signs = true,
+		underline = true,
+		update_in_insert = true,
+    })
 
 local border = {
-    { "╭", "VertSplit" },
-    { "─", "VertSplit" },
-    { "╮", "VertSplit" },
-    { "│", "VertSplit" },
-    { "╯", "VertSplit" },
-    { "─", "VertSplit" },
-    { "╰", "VertSplit" },
-    { "│", "VertSplit" },
+    { "╭", "FloatBorder" },
+    { "─", "FloatBorder" },
+    { "╮", "FloatBorder" },
+    { "│", "FloatBorder" },
+    { "╯", "FloatBorder" },
+    { "─", "FloatBorder" },
+    { "╰", "FloatBorder" },
+    { "│", "FloatBorder" },
 }
 
 cmp.setup({
@@ -21,12 +45,26 @@ cmp.setup({
 		documentation = {
 			border = border,
 		},
-},
+	},
+	experimental = {
+    ghost_text = true,
+  	},
+  	formatting = {
+    	fields = {
+      		cmp.ItemField.Abbr,
+      		cmp.ItemField.Kind,
+      		cmp.ItemField.Menu,
+    	},
+		format = lspkind.cmp_format {
+			mode = 'symbol_text',
+    		preset = 'default',
+		}
+	},
   -- Enable LSP snippets
   snippet = {
     expand = function(args)
-        vim.fn["vsnip#anonymous"](args.body)
-    end,
+   		luasnip.lsp_expand(args.body)
+	end,
   },
   mapping = {
     ['<C-p>'] = cmp.mapping.select_prev_item(),
@@ -47,11 +85,15 @@ cmp.setup({
   -- Installed sources
   sources = {
     { name = 'nvim_lsp' },
-    { name = 'vsnip' },
+    { name = 'luasnip' },
     { name = 'path' },
     { name = 'buffer' },
+	{ name = 'nvim_lua' },
+	{ name = 'creates' },
   },
 })
 
 require("lspconfig/rust")
 require("lspconfig/csharp")
+require("lspconfig/lualsp")
+
