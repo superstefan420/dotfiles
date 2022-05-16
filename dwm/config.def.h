@@ -5,6 +5,7 @@ static const int horizpadbar        = 30;        /* horizontal padding for statu
 static const int vertpadbar         = 15;        /* vertical padding for statusbar */
 static const unsigned int borderpx  = 2;        /* border pixel of windows */
 static const unsigned int snap      = 28;       /* snap pixel */
+static const int swallowfloating	= 1;
 static const unsigned int gappih    = 28;       /* horiz inner gap between windows */
 static const unsigned int gappiv    = 28;       /* vert inner gap between windows */
 static const unsigned int gappoh    = 28;       /* horiz outer gap between windows and screen edge */
@@ -20,18 +21,18 @@ static const int showbar            = 1;     /* 0 means no bar */
 static const int topbar             = 1;     /* 0 means bottom bar */
 static const char *fonts[]          = { "JetBrainsMono Nerd Font Mono:style=Medium:size=12", "Material Design Icons Desktop:size=16" };
 static const char dmenufont[]       = "JetBrainsMono Nerd Font Mono:size=16";
-static const char col_gray1[]       = "#2c2e34";
+static const char col_gray1[]       = "#15161e";
 static const char col_gray2[]       = "#444444";
-static const char col_gray3[]       = "#d4d4d4";
-static const char col_gray4[]       = "#e2e2e3";
+static const char col_gray3[]       = "#c9caf5";
+static const char col_gray4[]       = "#c0caf5";
 static const char col_cyan[]        = "#414550";
 static const char *colors[][3]      = {
 	/*               fg         bg         border   */
-	[SchemeNorm] = { col_gray3, col_gray1, "#2c2e34" },
-	[SchemeSel]  = { col_gray4, col_cyan,  "#414550"  },
+	[SchemeNorm] = { col_gray3, col_gray1, "#414868" },
+	[SchemeSel]  = { col_gray4, col_cyan,  "#bb9af7"  },
 	[SchemeStatus]  = { col_gray3, col_gray1,  "#000000"  }, // Statusbar right {text,background,not used but cannot be empty}
 	[SchemeTagsSel]  = { col_gray4, col_gray1,  "#000000"  }, // Tagbar left selected {text,background,not used but cannot be empty}
-	[SchemeTagsNorm]  = { "#7f8490", col_gray1,  "#000000"  }, // Tagbar left unselected {text,background,not used but cannot be empty}
+	[SchemeTagsNorm]  = { col_gray3, col_gray1,  "#000000"  }, // Tagbar left unselected {text,background,not used but cannot be empty}
 	[SchemeInfoSel]  = { col_gray3, col_gray1,  "#000000"  }, // infobar middle  selected {text,background,not used but cannot be empty}
 	[SchemeInfoNorm]  = { col_gray3, col_gray1,  "#000000"  }, // infobar middle  unselected {text,background,not used but cannot be empty}
 };
@@ -49,9 +50,12 @@ static const Rule rules[] = {
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class      instance    title       tags mask     isfloating   monitor */
+	/* class      instance    title       tags mask     isfloating  isterminal  noswallow   monitor */
 //	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
-	{ NULL,  NULL,       "music",       1 << 3,       0,           -1 },
+	{ NULL,  NULL,       "music",       1 << 3,         0,			0,          0,         -1 },
+	{ "Alacritty", NULL, NULL,			0,              0,          1,          0,         -1 },
+	{ NULL,      NULL,     "Event Tester", 0,         0,          0,           1,          -1 },
+	{ "neovide", NULL,  NULL,              0,           0,        0,           0,           -1 },
 };
 
 /* layout(s) */
@@ -82,7 +86,7 @@ static const Layout layouts[] = {
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", NULL };
-static const char *termcmd[]  = { "alacritty", NULL };
+static const char *termcmd[]  = { "alacritty", "-t", "terminal", NULL };
 static const char *scrotcmd[] = { "scrot", "-D", dmenumon, "-d", "5", NULL };
 // quit function wasn't working for some reason
 static const char *quitcmd [] = { "pkill", "dwm", NULL };

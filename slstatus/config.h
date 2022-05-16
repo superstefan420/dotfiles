@@ -65,6 +65,6 @@ static const char unknown_str[] = "n/a";
  */
 static const struct arg args[] = {
 	/* function format          argument */
-	{ run_command,   "^c#b38df3^ %s ^d^ ",       "/home/stefan/scripts/wup" },
-	{ datetime, "^c#f49660^ 󱑒 ^d^ %s ",           "%I:%M" },
+	{ run_command,   "^c#bb9af7^ %s ^d^ ",       "/home/stefan/scripts/wup" },
+	{ datetime, "^c#ff9e64^ 󱑒 ^d^ %s ",           "%I:%M" },
 };
